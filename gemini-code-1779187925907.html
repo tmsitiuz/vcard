@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rustam Kuchkarov — Электронная визитка / Digital Business Card</title>
+    <style>
+        :root {
+            --primary-color: #28366d;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-global: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-global);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Контейнер электронной визитки (оптимизирован под мобильные) */
+        .vcard-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Блок переключения языков */
+        .lang-switcher {
+            display: flex;
+            justify-content: center;
+            background: #f8fafc;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            gap: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid transparent;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: #e2e8f0;
+            color: var(--text-dark);
+        }
+
+        /* Блок брендинга (Логотипы) */
+        .branding-section {
+            padding: 24px 24px 16px 24px;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logos-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .logo-img {
+            height: 42px;
+            object-fit: contain;
+        }
+
+        .logo-divider {
+            width: 1px;
+            height: 35px;
+            background-color: var(--border-color);
+        }
+
+        .org-titles {
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        /* Главная информация (Профиль) */
+        .profile-section {
+            padding: 24px;
+            text-align: center;
+        }
+
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f0f4f8;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 auto 16px auto;
+            border: 3px solid #e2e8f0;
+        }
+
+        .user-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .user-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* Кнопки быстрых действий */
+        .action-buttons {
+            padding: 0 24px 20px 24px;
+        }
+
+        .btn-primary-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--primary-color);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(40, 54, 109, 0.2);
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary-action:hover {
+            opacity: 0.9;
+        }
+
+        /* Список контактов */
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+        }
+
+        .link-item:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .link-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .link-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .link-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .link-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .link-text {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        /* Футер */
+        .vcard-footer {
+            padding: 20px 24px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            border-top: 1px solid #f1f5f9;
+            font-weight: 500;
+        }
+
+        /* Скрытие неактивных языковых блоков */
+        [data-lang] {
+            display: none;
+        }
+        
+        body[data-current-lang="ru"] [data-lang="ru"] { display: block; }
+        body[data-current-lang="ru"] .logo-text-ru { display: block; }
+        
+        body[data-current-lang="uz"] [data-lang="uz"] { display: block; }
+        body[data-current-lang="uz"] .logo-text-uz { display: block; }
+        
+        body[data-current-lang="en"] [data-lang="en"] { display: block; }
+        body[data-current-lang="en"] .logo-text-en { display: block; }
+
+        .logo-text-ru, .logo-text-uz, .logo-text-en { display: none; }
+    </style>
+</head>
+<body data-current-lang="ru">
+
+    <div class="vcard-container">
+        
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="setLanguage('ru')">РУС</button>
+            <button class="lang-btn" onclick="setLanguage('uz')">OʻZB</button>
+            <button class="lang-btn" onclick="setLanguage('en')">ENG</button>
+        </div>
+
+        <div class="branding-section">
+            <div class="logos-row">
+                <img src="https://api-portal.gov.uz/uploads/14/2025/06/20/83b74441-314a-3438-885a-023959efb225_authority_14.png" class="logo-img" alt="Министерство">
+                <div class="logo-divider"></div>
+                <img src="https://tmsiti.uz/icons/brand.svg" class="logo-img" alt="Институт" onerror="this.style.display='none'">
+            </div>
+            <div class="org-titles">
+                <div class="logo-text-ru">Министерство строительства и ЖКХ РУз<br><span style="color:#64748b; font-size:10px;">НИИ технического регулирования и стандартизации</span></div>
+                <div class="logo-text-uz">Oʻzbekiston Respublikasi Qurilish va UY-JOY KOMMUNAL XOʻJALIGI VAZIRLIGI<br><span style="color:#64748b; font-size:10px;">Texnik me'yorlash va standartlashtirish ilmiy tadqiqot instituti</span></div>
+                <div class="logo-text-en">Ministry of Construction and Communal Services of RUz<br><span style="color:#64748b; font-size:10px;">Research Institute for Technical Regulation and Standardization</span></div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <div class="avatar-placeholder">РК</div>
+            <h1 class="user-name">Рустам Кучкаров</h1>
+            <div class="user-title">
+                <span data-lang="ru">Директор</span>
+                <span data-lang="uz">Direktor</span>
+                <span data-lang="en">Director</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="#" class="btn-primary-action" onclick="downloadVCard(event)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                <span data-lang="ru">Сохранить контакт</span>
+                <span data-lang="uz">Kontaktni saqlash</span>
+                <span data-lang="en">Save Contact</span>
+            </a>
+
+            <div class="links-list">
+                <a href="tel:+998977277060" class="link-item">
+                    <div class="link-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </div>
+                    <div class="link-info">
+                        <span class="link-label" data-lang="ru">Телефон</span>
+                        <span class="link-label" data-lang="uz">Telefon</span>
+                        <span class="link-label" data-lang="en">Phone</span>
+                        <span class="link-text">+998 97 727 70 60</span>
+                    </div>
+                </a>
+
+                <a href="mailto:rustam.kuchkarov@gmail.com" class="link-item">
+                    <div class="link-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div class="link-info">
+                        <span class="link-label">Email</span>
+                        <span class="link-text">rustam.kuchkarov@gmail.com</span>
+                    </div>
+                </a>
+
+                <a href="https://www.tmsiti.uz" target="_blank" class="link-item">
+                    <div class="link-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    </div>
+                    <div class="link-info">
+                        <span class="link-label" data-lang="ru">Сайт института</span>
+                        <span class="link-label" data-lang="uz">Institut sayti</span>
+                        <span class="link-label" data-lang="en">Institute Website</span>
+                        <span class="link-text">www.tmsiti.uz</span>
+                    </div>
+                </a>
+
+                <a href="https://www.google.com/maps/search/?api=1&query=41.304519,69.479916" target="_blank" class="link-item">
+                    <div class="link-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <div class="link-info">
+                        <span class="link-label" data-lang="ru">Адрес</span>
+                        <span class="link-label" data-lang="uz">Manzil</span>
+                        <span class="link-label" data-lang="en">Address</span>
+                        <span class="link-text" data-lang="ru">Новый Ташкент, ул. Энергетиков</span>
+                        <span class="link-text" data-lang="uz">Yangi Toshkent, Energetiklar koʻchasi</span>
+                        <span class="link-text" data-lang="en">Yangi Toshkent, Energetiklar str.</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="vcard-footer">
+            <span>© TMSITI 2026</span>
+        </div>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.body.setAttribute('data-current-lang', lang);
+            
+            // Смена активной кнопки
+            const buttons = document.querySelectorAll('.lang-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const activeButton = Array.from(buttons).find(btn => btn.textContent.toLowerCase().includes(lang === 'ru' ? 'рус' : lang === 'uz' ? 'oʻz' : 'eng'));
+            if (activeButton) activeButton.classList.add('active');
+        }
+
+        function downloadVCard(e) {
+            e.preventDefault();
+            
+            // Генерация универсального файла vCard (VCF) с координатами
+            const vcardData = [
+                "BEGIN:VCARD",
+                "VERSION:3.0",
+                "FN;CHARSET=UTF-8:Рустам Кучкаров",
+                "N;CHARSET=UTF-8:Кучкаров;Рустам;;;",
+                "ORG;CHARSET=UTF-8:НИИ технического регулирования и стандартизации (TMSITI)",
+                "TITLE;CHARSET=UTF-8:Директор",
+                "TEL;TYPE=CELL,VOICE:+998977277060",
+                "EMAIL;TYPE=PREF,INTERNET:rustam.kuchkarov@gmail.com",
+                "URL:https://www.tmsiti.uz",
+                "ADR;TYPE=WORK;CHARSET=UTF-8:;;улица Энергетиков;Новый Ташкент;Ташкентская область;;Узбекистан",
+                "GEO:41.304519;69.479916",
+                "END:VCARD"
+            ].join("\n");
+
+            const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Rustam_Kuchkarov.vcf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
