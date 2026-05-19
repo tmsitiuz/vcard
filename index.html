@@ -76,7 +76,7 @@
 
         /* Блок брендинга (Логотипы) */
         .branding-section {
-            padding: 24px 24px 16px 24px;
+            padding: 24px 20px 16px 20px;
             text-align: center;
             border-bottom: 1px solid #f1f5f9;
         }
@@ -101,39 +101,32 @@
         }
 
         .org-titles {
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 10.5px;
+            font-weight: 700;
             line-height: 1.4;
             color: var(--primary-color);
             text-transform: uppercase;
-            letter-spacing: 0.3px;
-            max-width: 340px;
-            margin: 0 auto;
+            letter-spacing: 0.2px;
         }
 
-        /* Главная информация (Профиль) */
+        .institute-title {
+            display: block;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 5px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        /* Главная информация (Профиль без фото) */
         .profile-section {
-            padding: 24px;
+            padding: 28px 24px 24px 24px;
             text-align: center;
         }
 
-        .avatar-placeholder {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #f0f4f8;
-            color: var(--primary-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0 auto 16px auto;
-            border: 3px solid #e2e8f0;
-        }
-
         .user-name {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             color: var(--primary-color);
             letter-spacing: -0.5px;
@@ -253,7 +246,7 @@
             font-weight: 500;
         }
 
-        /* Скрытие неактивных языковых блоков */
+        /* Управление отображением языковых блоков */
         [data-lang] {
             display: none;
         }
@@ -287,15 +280,23 @@
                 <img src="https://tmsiti.uz/icons/brand.svg" class="logo-img" alt="Институт" onerror="this.style.display='none'">
             </div>
             <div class="org-titles">
-                <div class="logo-text-ru">Министерство строительства и ЖКХ РУз<br><span style="color:#64748b; font-size:10px;">НИИ технического регулирования и стандартизации</span></div>
-                <div class="logo-text-uz">Oʻzbekiston Respublikasi Qurilish va UY-JOY KOMMUNAL XOʻJALIGI VAZIRLIGI<br><span style="color:#64748b; font-size:10px;">Texnik me'yorlash va standartlashtirish ilmiy tadqiqot instituti</span></div>
-                <div class="logo-text-en">Ministry of Construction and Communal Services of RUz<br><span style="color:#64748b; font-size:10px;">Research Institute for Technical Regulation and Standardization</span></div>
+                <div class="logo-text-ru">
+                    Министерство строительства и жилищно-коммунального хозяйства Республики Узбекистан
+                    <span class="institute-title">Научно-исследовательский институт технического регулирования и стандартизации</span>
+                </div>
+                <div class="logo-text-uz">
+                    Oʻzbekiston Respublikasi Qurilish va uy-joy kommunal xoʻjaligi vazirligi
+                    <span class="institute-title">Texnik me'yorlash va standartlashtirish ilmiy tadqiqot instituti</span>
+                </div>
+                <div class="logo-text-en">
+                    Ministry of Construction, Housing and Communal Services of the Republic of Uzbekistan
+                    <span class="institute-title">Research Institute for Technical Regulation and Standardization</span>
+                </div>
             </div>
         </div>
 
         <div class="profile-section">
-            <div class="avatar-placeholder">РК</div>
-            <h1 class="user-name">Рустам Кучкаров</h1>
+            <h1 class="user-name">Rustam Kuchkarov</h1>
             <div class="user-title">
                 <span data-lang="ru">Директор</span>
                 <span data-lang="uz">Direktor</span>
@@ -346,7 +347,7 @@
                     </div>
                 </a>
 
-                <a href="https://www.google.com/maps/search/?api=1&query=41.304519,69.479916" target="_blank" class="link-item">
+                <a href="https://maps.google.com/?q=41.304519,69.479916" target="_blank" class="link-item">
                     <div class="link-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
@@ -371,7 +372,7 @@
         function setLanguage(lang) {
             document.body.setAttribute('data-current-lang', lang);
             
-            // Смена активной кнопки
+            // Смена активного стиля кнопок переключателя
             const buttons = document.querySelectorAll('.lang-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             
@@ -382,14 +383,14 @@
         function downloadVCard(e) {
             e.preventDefault();
             
-            // Генерация универсального файла vCard (VCF) с координатами
+            // Создание файла контакта vCard (.vcf)
             const vcardData = [
                 "BEGIN:VCARD",
                 "VERSION:3.0",
-                "FN;CHARSET=UTF-8:Рустам Кучкаров",
-                "N;CHARSET=UTF-8:Кучкаров;Рустам;;;",
+                "FN;CHARSET=UTF-8:Rustam Kuchkarov",
+                "N;CHARSET=UTF-8:Kuchkarov;Rustam;;;",
                 "ORG;CHARSET=UTF-8:НИИ технического регулирования и стандартизации (TMSITI)",
-                "TITLE;CHARSET=UTF-8:Директор",
+                "TITLE;CHARSET=UTF-8:Director",
                 "TEL;TYPE=CELL,VOICE:+998977277060",
                 "EMAIL;TYPE=PREF,INTERNET:rustam.kuchkarov@gmail.com",
                 "URL:https://www.tmsiti.uz",
